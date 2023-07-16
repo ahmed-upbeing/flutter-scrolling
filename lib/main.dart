@@ -34,6 +34,10 @@ class HorizonsApp extends StatelessWidget {
               },
               expandedHeight: 200,
               flexibleSpace: FlexibleSpaceBar(
+                stretchModes: const [
+                  StretchMode.zoomBackground,
+                  StretchMode.blurBackground
+                ],
                 title: const Text('Weather of the week'),
                 background: DecoratedBox(
                   position: DecorationPosition.foreground,
