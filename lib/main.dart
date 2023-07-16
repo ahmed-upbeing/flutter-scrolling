@@ -27,7 +27,9 @@ class HorizonsApp extends StatelessWidget {
           title: const Text('Horizons'),
           backgroundColor: Colors.teal[800],
         ),
-        body: const WeeklyForecastList(),
+        body: const CustomScrollView(slivers: [
+          WeeklyForecastList(),
+        ]),
       ),
     );
   }
@@ -41,29 +43,73 @@ class WeeklyForecastList extends StatelessWidget {
     final DateTime currentDate = DateTime.now();
     final TextTheme textTheme = Theme.of(context).textTheme;
 
-    return ListView.builder(
-      itemCount: 7,
-      itemBuilder: (context, index) {
-        final dailyForecast = Server.getDailyForecastByID(index);
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          final dailyForecast = Server.getDailyForecastByID(index);
 
-        return Card(
-          child: ListTile(
-            leading: Text(
-              dailyForecast.getDate(currentDate.day).toString(),
-              style: textTheme.headlineMedium,
+          return Card(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    height: 100,
+                    width: 100,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        DecoratedBox(
+                          position: DecorationPosition.foreground,
+                          decoration: const BoxDecoration(
+                            gradient: RadialGradient(
+                              colors: [
+                                Colors.grey,
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                          child: Image.network(
+                            dailyForecast.imageId,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Center(
+                          child: Text(
+                            dailyForecast.getDate(currentDate.day).toString(),
+                            style: textTheme.headlineLarge,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            dailyForecast.getWeekday(currentDate.weekday),
+                            style: textTheme.headlineSmall,
+                          ),
+                          Text(dailyForecast.description),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Text(
+                    '${dailyForecast.highTemp} | ${dailyForecast.lowTemp} F',
+                    style: textTheme.titleSmall,
+                  ),
+                ],
+              ),
             ),
-            title: Text(
-              dailyForecast.getWeekday(currentDate.weekday),
-              style: textTheme.headlineSmall,
-            ),
-            subtitle: Text(dailyForecast.description),
-            trailing: Text(
-              '${dailyForecast.highTemp} | ${dailyForecast.lowTemp} F',
-              style: textTheme.titleSmall,
-            ),
-          ),
-        );
-      },
+          );
+        },
+        childCount: 7,
+      ),
     );
   }
 }
