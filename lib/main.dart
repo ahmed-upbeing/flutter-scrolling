@@ -22,14 +22,17 @@ class HorizonsApp extends StatelessWidget {
       // platform they are using.
       scrollBehavior: const ConstantScrollBehavior(),
       title: 'Horizons Weather',
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Horizons'),
-          backgroundColor: Colors.teal[800],
+      home: const Scaffold(
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              title: Text('My sliver app bar'),
+              backgroundColor: Colors.green,
+              floating: true,
+            ),
+            WeeklyForecastList(),
+          ],
         ),
-        body: const CustomScrollView(slivers: [
-          WeeklyForecastList(),
-        ]),
       ),
     );
   }
